@@ -1,7 +1,6 @@
 import { configureStore } from '@reduxjs/toolkit'
 import { setupListeners } from '@reduxjs/toolkit/query'
 import counterReducer from './features/counter/counterSlice'
-import userApi from './templates/labs/Lab9/users.js';
 import usersReducer from './components/reducers/usersReducers.js'
 
 const store = configureStore({

@@ -1,0 +1,97 @@
+/* Переменные для фона и текста */
+:root {
+  --background-color-light: #ffffff;
+  --background-color-dark: #121212;
+  --text-color-light: #000000;
+  --text-color-dark: #ffffff;
+  --logo-filter-light: invert(0);
+  --logo-filter-dark: invert(1);
+}
+
+body {
+  background-color: var(--background-color-light); /* светлая тема по умолчанию */
+  color: var(--text-color-light); /* светлый текст */
+}
+
+[data-theme="dark"] {
+  --background-color-light: #121212;
+  --background-color-dark: #1e1e1e;
+  --text-color-light: #ffffff;
+  --text-color-dark: #ffffff;
+  --logo-filter-light: invert(1);
+  --logo-filter-dark: invert(0);
+}
+
+.header-appbar {
+  background-color: var(--background-color-light);
+  box-shadow: none !important;
+  border-bottom: 1px solid #4D4D4D;
+  width: 100%;
+}
+
+.header-toolbar {
+  min-height: 64px;
+  padding-left: 16px;
+  padding-right: 16px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.header-logo {
+  height: 80px;
+  filter: var(--logo-filter-light);
+}
+
+.header-title {
+  color: var(--text-color-light);
+  font-weight: 500;
+}
+
+.header-divider {
+  width: 1px;
+  height: 32px;
+  background-color: #4D4D4D;
+  margin-right: 14px;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+}
+
+.header-button {
+  color: var(--text-color-light) !important;
+  text-transform: none !important;
+  margin-left: 16px !important;
+  font-weight: 500 !important;
+}
+
+.header-button:hover {
+  background-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+.header-drawer {
+  width: 250px;
+}
+
+[data-theme="dark"] .header-appbar {
+  background-color: var(--background-color-dark);
+}
+
+[data-theme="dark"] .header-logo {
+  filter: var(--logo-filter-dark);
+}
+
+[data-theme="dark"] .header-title {
+  color: var(--text-color-dark);
+}
+
+[data-theme="dark"] .header-button {
+  color: var(--text-color-dark) !important;
+}
