@@ -1,131 +1,225 @@
-import AppBar from '@mui/material/AppBar';
-import Toolbar from '@mui/material/Toolbar';
-import Typography from '@mui/material/Typography';
-import Box from '@mui/material/Box';
-import IconButton from '@mui/material/IconButton';
-import MenuIcon from '@mui/icons-material/Menu';
-import DarkModeIcon from '@mui/icons-material/DarkMode';
-import LightModeIcon from '@mui/icons-material/LightMode';
-import { THEME_DARK, THEME_LIGHT } from '../contexts/ThemeContext';
-import { useContext, useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import ThemeContext from '../contexts/ThemeContext';
+import {useContext, useEffect, useState} from 'react';
+import {useNavigate} from 'react-router-dom';
+import {
+  AppBar,
+  Avatar,
+  Box,
+  Button,
+  CircularProgress,
+  Divider,
+  Drawer,
+  IconButton,
+  List,
+  ListItem,
+  ListItemButton,
+  ListItemText,
+  Toolbar,
+  Typography
+} from '@mui/material';
+import {
+  DarkMode as DarkModeIcon,
+  LightMode as LightModeIcon,
+  Login as LoginIcon,
+  Logout as LogoutIcon,
+  Menu as MenuIcon
+} from '@mui/icons-material';
+import ThemeContext, {THEME_DARK, THEME_LIGHT} from '../contexts/ThemeContext';
 import useMediaQuery from '@mui/material/useMediaQuery';
-import Drawer from '@mui/material/Drawer';
-import List from '@mui/material/List';
-import ListItem from '@mui/material/ListItem';
-import ListItemButton from '@mui/material/ListItemButton';
-import ListItemText from '@mui/material/ListItemText';
-import Button from '@mui/material/Button';
 import './Header.css';
+import {authAPI} from "../services/authApi.js";
+import AuthModal from "../templates/Auth/AuthModal.jsx";
+import UserProfileModal from "../templates/Settings/UserProfileModal.jsx";
 
-const Header = ({ pages }) => {
+const Header = ({pages}) => {
   const navigate = useNavigate();
   const isMobile = useMediaQuery('(max-width:900px)');
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [authModalOpen, setAuthModalOpen] = useState(false);
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(false);
 
-  const { setTheme, mode } = useContext(ThemeContext);
+  const {setTheme, mode} = useContext(ThemeContext);
 
-  // Устанавливаем атрибут data-theme в body при изменении темы
   useEffect(() => {
-    document.body.setAttribute('data-theme', mode === THEME_DARK ? 'dark' : 'light');
-  }, [mode]);
+    const token = localStorage.getItem('access_token');
+    if (token) {
+      fetchUserData(token);
+    }
+  }, []);
 
-  const toggleDrawer = (open) => () => {
-    setDrawerOpen(open);
+  const [userImage, setUserImage] = useState(null);
+  const [profileModalOpen, setProfileModalOpen] = useState(false);
+  const handleImageUpdate = (newImage) => {
+    setUserImage(newImage);
+  };
+  const fetchUserData = async (token) => {
+    try {
+      setLoading(true);
+      const userData = await authAPI.getUserData(token);
+      const user = {
+        name: userData.name,
+        last_name: userData.last_name,
+        email: userData.email,
+        role: userData.role?.name || 'USER',
+        hasImage: !!userData.img // флаг наличия изображения
+      }
+      setUser(user);
+      if (userData.img) {
+        try {
+          const imageData = await authAPI.getUserImage(token);
+          setUserImage(imageData.url);
+        } catch (imgError) {
+          console.error('Error loading user image:', imgError);
+          setUserImage(null);
+        }
+      } else {
+        setUserImage(null);
+      }
+    } catch (err) {
+      console.error('Error:', err);
+      handleLogout();
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleAuthSuccess = (token) => {
+    localStorage.setItem('access_token', token);
+    fetchUserData(token);
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem('access_token');
+    setUser(null);
   };
 
   const toggleTheme = () => {
     setTheme(mode === THEME_DARK ? THEME_LIGHT : THEME_DARK);
   };
 
-  return (
-    <AppBar
-      position="static"
-      className="header-appbar"
-      sx={{
-        backgroundColor: mode === THEME_DARK ? '#121212' : '#ffffff', // Фон в зависимости от темы
-        boxShadow: 'none',
-      }}
-    >
-      <Toolbar className="header-toolbar">
-        {/* Левая часть — Логотип + название */}
-        <Box className="header-left" onClick={() => navigate('/')}>
-          <Box
-            component="img"
-            src="src/assets/Logo.png"
-            alt="TranslatorSpace Logo"
-            className="header-logo"
-            sx={{
-              filter: mode === THEME_DARK ? 'invert(0)' : 'invert(1)', // Инвертируем логотип в темной теме
-            }}
-          />
-          <Box className="header-divider" />
-          <Typography variant="h6" noWrap className="header-title" sx={{ color: mode === THEME_DARK ? '#ffffff' : '#000000' }}>
-            Translator Space
-          </Typography>
-        </Box>
+  const toggleDrawer = (open) => () => {
+    setDrawerOpen(open);
+  };
 
-        {/* Правая часть — Навигация и переключатель тем */}
-        {isMobile ? (
-          <>
-            <IconButton size="large" edge="end" color="inherit" onClick={toggleDrawer(true)} aria-label="Открыть меню">
-              <MenuIcon sx={{ color: mode === THEME_DARK ? '#ffffff' : '#000000' }} />
-            </IconButton>
-            <Drawer anchor="right" open={drawerOpen} onClose={toggleDrawer(false)}>
-              <Box
-                className="header-drawer"
-                role="presentation"
-                onClick={toggleDrawer(false)}
-                onKeyDown={toggleDrawer(false)}
-              >
-                <List>
-                  {pages.map((page) => (
-                    <ListItem key={page.id} disablePadding>
-                      <ListItemButton onClick={() => navigate(page.path)}>
-                        <ListItemText primary={page.title} />
-                      </ListItemButton>
-                    </ListItem>
-                  ))}
-                  <ListItem disablePadding>
-                    <IconButton onClick={toggleTheme} color="inherit" aria-label="Переключить тему" sx={{ marginLeft: 1 }}>
-                      {mode === THEME_DARK ? (
-                        <LightModeIcon sx={{ color: '#ffffff' }} />
-                      ) : (
-                        <DarkModeIcon sx={{ color: '#000000' }} />
-                      )}
-                    </IconButton>
-                  </ListItem>
-                </List>
-              </Box>
-            </Drawer>
-          </>
-        ) : (
-          <Box className="header-right">
-            <Box className="header-divider" />
-            {pages.map((page) => (
-              <Button
-                key={page.id}
-                onClick={() => navigate(page.path)}
-                className="header-button"
-              >
-                {page.title}
-              </Button>
-            ))}
+  return (
+    <>
+      <AppBar position="static" className={`header-appbar ${mode}`}>
+        <Toolbar className="header-toolbar">
+          {/* Логотип и название */}
+          <Box className="header-logo-container" onClick={() => navigate('/')}>
+            <img src="src/assets/Logo.png" alt="Logo" className="header-logo"/>
+            <Divider orientation="vertical" flexItem/>
+            <Typography variant="h6" className="header-title">
+              TranslatorSpace
+            </Typography>
+          </Box>
+
+          {/* Навигация (десктоп) */}
+          {!isMobile && (
+            <Box className="header-nav">
+              {pages.map((page) => (
+                <Button
+                  key={page.id}
+                  onClick={() => navigate(page.path)}
+                  className="nav-button"
+                >
+                  {page.title}
+                </Button>
+              ))}
+            </Box>
+          )}
+          {/* Правая часть */}
+          <Divider orientation="vertical" flexItem/>
+          <Box className="header-actions">
             <IconButton
               onClick={toggleTheme}
-              className="header-theme-button"
-              color="inherit"
-              aria-label="Переключить тему"
-              sx={{ color: mode === THEME_DARK ? '#ffffff' : '#000000' }}
+              className="theme-toggle"
+              aria-label="Toggle theme"
             >
-              {mode === THEME_DARK ? <LightModeIcon /> : <DarkModeIcon />}
+              {mode === THEME_DARK ? <LightModeIcon/> : <DarkModeIcon/>}
             </IconButton>
+
+            {renderAuthButton()}
+
+            {isMobile && (
+              <IconButton
+                className="menu-button"
+                onClick={toggleDrawer(true)}
+                aria-label="Open menu"
+              >
+                <MenuIcon/>
+              </IconButton>
+            )}
           </Box>
-        )}
-      </Toolbar>
-    </AppBar>
+        </Toolbar>
+      </AppBar>
+
+      {/* Мобильное меню */}
+      <Drawer
+        anchor="right"
+        open={drawerOpen}
+        onClose={toggleDrawer(false)}
+        className="mobile-drawer"
+      >
+        <Box className="drawer-content">
+          <List>
+            {pages.map((page) => (
+              <ListItem key={page.id} disablePadding>
+                <ListItemButton onClick={() => navigate(page.path)}>
+                  <ListItemText primary={page.title}/>
+                </ListItemButton>
+              </ListItem>
+            ))}
+          </List>
+        </Box>
+      </Drawer>
+
+      {/* Модальное окно авторизации */}
+      <AuthModal
+        open={authModalOpen}
+        onClose={() => setAuthModalOpen(false)}
+        onAuthSuccess={handleAuthSuccess}
+      />
+      {/* Модальное окно профиля */}
+      <UserProfileModal
+        open={profileModalOpen}
+        onClose={() => setProfileModalOpen(false)}
+        user={user}
+        userImage={userImage}
+        onImageUpdate={handleImageUpdate}
+      />
+    </>
   );
+
+  function renderAuthButton() {
+    if (loading) return <CircularProgress className="auth-loader"/>;
+
+    return user ? (
+      <Box className="user-profile">
+        <IconButton
+          onClick={() => setProfileModalOpen(true)}
+          className="avatar-button"
+        >
+          {userImage ? (
+            <Avatar
+              src={userImage}
+              className="user-avatar"
+              sx={{width: 40, height: 40}}
+            />
+          ) : (
+            <Avatar className="user-avatar">
+              {user.name.charAt(0)}
+            </Avatar>
+          )}
+        </IconButton>
+        <LogoutIcon onClick={handleLogout} className="logout-button">
+        </LogoutIcon>
+      </Box>
+    ) : (
+      <LoginIcon onClick={() => setAuthModalOpen(true)} className="login-button">
+      </LoginIcon>
+    );
+  }
 };
 
 export default Header;

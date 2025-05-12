@@ -1,27 +1,31 @@
-import { Navigate, Outlet, useLocation } from "react-router-dom";
+import {Outlet} from "react-router-dom";
 import "./App.css";
 import Content from "./templates/Content";
 import LocalContainer from "./templates/LocalContainer";
 import Grid from "@mui/material/Grid";
-import { Box } from "@mui/material";
-import ThemeContext, { lightTheme, darkTheme, THEME_LIGHT, THEME_DARK } from "./contexts/ThemeContext";
+import {Box} from "@mui/material";
+import ThemeContext, {darkTheme, lightTheme, THEME_DARK, THEME_LIGHT} from "./contexts/ThemeContext";
 import Header from "./components/Header.jsx";
-import { useState, useEffect } from "react";
-import { ThemeProvider } from "@mui/material/styles";
+import {useEffect, useState} from "react";
+import {ThemeProvider} from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 
 const pages = [
-  { id: 1, title: "Проекты", path: "about-me" },
+  {id: 1, title: "Проекты", path: "about-me"},
 ];
 
 function App() {
-  const location = useLocation();
-  const token = localStorage.getItem("access_token");
-
   const [theme, setThemeState] = useState(lightTheme);
   const [mode, setMode] = useState(THEME_LIGHT);
 
+  const [user, setUser] = useState(null);
+
   useEffect(() => {
+    const token = localStorage.getItem('access_token');
+    if (token) {
+      setUser({username: 'geroi657'});
+    }
+
     const savedMode = localStorage.getItem("appTheme");
     if (savedMode === THEME_DARK) {
       setThemeState(darkTheme);
@@ -44,23 +48,19 @@ function App() {
     }
   };
 
-  if (!token && location.pathname !== "/login") {
-    return <Navigate to="/login" replace />;
-  }
-
   return (
-    <ThemeContext.Provider value={{ theme, setTheme, mode }}>
-      <ThemeProvider theme={ theme}>
-        <CssBaseline />
+    <ThemeContext.Provider value={{theme, setTheme, mode}}>
+      <ThemeProvider theme={theme}>
+        <CssBaseline/>
 
-        <Header pages={pages} />
+        <Header pages={pages} user={user} setUser={setUser}/>
 
         <LocalContainer>
-          <Box height={"100%"} sx={{ padding: 2, overflow: "auto" }}>
+          <Box height={"100%"} sx={{padding: 2, overflow: "auto"}}>
             <Grid container spacing={2}>
               <Grid item xs={12}>
                 <Content>
-                  <Outlet />
+                  <Outlet/>
                 </Content>
               </Grid>
             </Grid>

@@ -1,97 +1,145 @@
-/* Переменные для фона и текста */
-:root {
-  --background-color-light: #ffffff;
-  --background-color-dark: #121212;
-  --text-color-light: #000000;
-  --text-color-dark: #ffffff;
-  --logo-filter-light: invert(0);
-  --logo-filter-dark: invert(1);
-}
-
-body {
-  background-color: var(--background-color-light); /* светлая тема по умолчанию */
-  color: var(--text-color-light); /* светлый текст */
-}
-
-[data-theme="dark"] {
-  --background-color-light: #121212;
-  --background-color-dark: #1e1e1e;
-  --text-color-light: #ffffff;
-  --text-color-dark: #ffffff;
-  --logo-filter-light: invert(1);
-  --logo-filter-dark: invert(0);
-}
-
+/* Основные стили хедера */
 .header-appbar {
-  background-color: var(--background-color-light);
-  box-shadow: none !important;
-  border-bottom: 1px solid #4D4D4D;
-  width: 100%;
+    background-color: var(--bg-primary);
+    box-shadow: none !important;
+    transition: background-color 0.3s ease;
+}
+
+.header-appbar.dark {
+    --bg-primary: #121212;
+    --text-primary: #ffffff;
+    --hover-bg: rgba(255, 255, 255, 0.08);
+}
+
+.header-appbar.light {
+    --bg-primary: #ffffff;
+    --text-primary: #000000;
+    --hover-bg: rgba(0, 0, 0, 0.04);
 }
 
 .header-toolbar {
-  min-height: 64px;
-  padding-left: 16px;
-  padding-right: 16px;
-  display: flex;
-  justify-content: space-between;
+    display: flex;
+    justify-content: space-between;
+    padding: 0 15px !important;
 }
 
-.header-left {
-  display: flex;
-  align-items: center;
-  cursor: pointer;
+.header-logo-container {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    gap: 16px;
 }
 
 .header-logo {
-  height: 80px;
-  filter: var(--logo-filter-light);
+    filter: var(--logo-filter);
+    width: 80px;
+    height: 80px;
+}
+
+.dark .header-logo {
+    --logo-filter: invert(0);
+}
+
+.light .header-logo {
+    --logo-filter: invert(1);
 }
 
 .header-title {
-  color: var(--text-color-light);
-  font-weight: 500;
+    color: var(--text-primary) !important;
+    font-weight: 500 !important;
 }
 
-.header-divider {
-  width: 1px;
-  height: 32px;
-  background-color: #4D4D4D;
-  margin-right: 14px;
+.header-nav {
+    display: flex;
+    flex-grow: 1;
+    justify-content: center;
+    gap: 8px;
 }
 
-.header-right {
-  display: flex;
-  align-items: center;
+.nav-button {
+    color: var(--text-primary) !important;
+    text-transform: none !important;
+    font-weight: 500 !important;
 }
 
-.header-button {
-  color: var(--text-color-light) !important;
-  text-transform: none !important;
-  margin-left: 16px !important;
-  font-weight: 500 !important;
+.nav-button:hover {
+    background-color: var(--hover-bg) !important;
 }
 
-.header-button:hover {
-  background-color: rgba(255, 255, 255, 0.1) !important;
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 16px;
 }
 
-.header-drawer {
-  width: 250px;
+.theme-toggle {
+    color: var(--text-primary) !important;
 }
 
-[data-theme="dark"] .header-appbar {
-  background-color: var(--background-color-dark);
+/* Стили для мобильного меню */
+.mobile-drawer .MuiDrawer-paper {
+    width: 250px;
+    background-color: var(--bg-primary) !important;
 }
 
-[data-theme="dark"] .header-logo {
-  filter: var(--logo-filter-dark);
+.drawer-content .MuiListItemButton-root {
+    color: var(--text-primary) !important;
 }
 
-[data-theme="dark"] .header-title {
-  color: var(--text-color-dark);
+/* Стили для кнопок авторизации */
+.auth-loader {
+    color: var(--text-primary) !important;
 }
 
-[data-theme="dark"] .header-button {
-  color: var(--text-color-dark) !important;
+.user-profile {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.user-avatar {
+    background-color: var(--avatar-bg) !important;
+    color: var(--avatar-color) !important;
+    font-weight: bold !important;
+}
+
+.dark .user-avatar {
+    --avatar-bg: #ffffff;
+    --avatar-color: #1976d2;
+}
+
+.light .user-avatar {
+    --avatar-bg: #1976d2;
+    --avatar-color: #ffffff;
+}
+
+.user-role {
+    color: #fff !important;
+    font-weight: bold !important;
+    background-color: #4caf50 !important;
+}
+
+.user-role.SUPERUSER {
+    background-color: #ff5722 !important;
+}
+
+.login-button,
+.logout-button {
+    border-color: var(--text-primary) !important;
+    color: var(--text-primary) !important;
+}
+
+.login-button:hover,
+.logout-button:hover {
+    background-color: var(--hover-bg) !important;
+}
+
+.avatar-button {
+    padding: 0 !important;
+    margin-right: 8px;
+}
+
+.avatar-button:hover {
+    background-color: transparent !important;
 }

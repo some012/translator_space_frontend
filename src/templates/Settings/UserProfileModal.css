@@ -1,0 +1,95 @@
+.profile-modal .MuiBackdrop-root {
+    background-color: rgba(0, 0, 0, 0.5) !important;
+}
+
+.profile-modal-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 700px;
+    height: 542px;
+    background-color: #282828;
+    box-shadow: var(--shadow);
+    display: flex;
+    flex-direction: column;
+}
+
+.dark .profile-modal-content {
+    --bg-primary: #1e1e1e;
+    --shadow: 0px 4px 20px rgba(0, 0, 0, 0.5);
+}
+
+.light .profile-modal-content {
+    --bg-primary: #ffffff;
+    --shadow: 0px 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.profile-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 24px;
+}
+
+.profile-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 24px;
+    gap: 12px;
+}
+
+.avatar-container {
+    margin-bottom: 16px;
+}
+
+.profile-avatar {
+    width: 150px !important;
+    height: 150px !important;
+    font-size: 48px !important;
+    position: absolute;
+    right: 155%;
+}
+
+.user-name {
+    font-weight: 500 !important;
+    font-size: 28px !important;
+    line-height: 54px !important;
+    vertical-align: middle;
+    letter-spacing: 0;
+    position: absolute;
+    bottom: 65%;
+    left: 30%;
+}
+
+.user-email {
+    color: var(--text-secondary);
+    text-align: center;
+    font-weight: 500 !important;
+    font-size: 16px !important;
+    line-height: 54px !important;
+    vertical-align: middle;
+    letter-spacing: 0;
+    position: absolute;
+    bottom: 60%;
+    left: 30%;
+}
+
+.profile-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 16px 24px;
+}
+
+.upload-button,
+.delete-button {
+    padding: 10px !important;
+}
+
+.error-message {
+    text-align: center;
+    margin: 8px 0;
+    padding: 0 24px;
+}

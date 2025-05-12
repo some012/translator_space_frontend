@@ -1,11 +1,23 @@
 // contexts/ThemeContext.js
-import { createContext } from "react";
-import { createTheme } from "@mui/material/styles";
+import {createContext} from "react";
+import {createTheme} from "@mui/material/styles";
 
 const THEME_LIGHT = "light";
 const THEME_DARK = "dark";
 
 const lightTheme = createTheme({
+  typography: {
+    fontFamily: 'Montserrat, sans-serif',
+  },
+  components: {
+    MuiCssBaseline: {
+      styleOverrides: {
+        body: {
+          fontFamily: 'Montserrat, sans-serif',
+        },
+      },
+    },
+  },
   palette: {
     mode: 'light',
     background: {
@@ -19,6 +31,18 @@ const lightTheme = createTheme({
 });
 
 const darkTheme = createTheme({
+  typography: {
+    fontFamily: 'Montserrat, sans-serif',
+  },
+  components: {
+    MuiCssBaseline: {
+      styleOverrides: {
+        body: {
+          fontFamily: 'Montserrat, sans-serif',
+        },
+      },
+    },
+  },
   palette: {
     mode: 'dark',
     background: {
@@ -34,4 +58,4 @@ const darkTheme = createTheme({
 const ThemeContext = createContext();
 
 export default ThemeContext;
-export { THEME_LIGHT, THEME_DARK, lightTheme, darkTheme };
+export {THEME_LIGHT, THEME_DARK, lightTheme, darkTheme};
